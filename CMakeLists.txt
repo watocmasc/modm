@@ -18,11 +18,6 @@ set(SOURCE_FILES
     src/main.cpp
 )
 
-# Указываем путь к папке с ресурсами, если они есть
-set(RESOURCE_FILES
-    resources.qrc  # Файл ресурсов, если он есть
-)
-
 if(NOT CMAKE_GENERATOR)
     set(CMAKE_GENERATOR "Ninja")
 endif()
