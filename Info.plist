@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+  <dict>
+    <!-- Основные сведения о приложении -->
+    <key>CFBundleName</key>
+    <string>CPS</string>
+    
+    <key>CFBundleDisplayName</key>
+    <string>CPS</string>
+    
+    <key>CFBundleIdentifier</key>
+    <string>com.example.cps</string>
+    
+    <key>CFBundleVersion</key>
+    <string>1.0.0</string>
+    
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    
+    <!-- Иконка приложения -->
+    <key>CFBundleIconFile</key>
+    <string>icon</string>
+    
+    <!-- Типы поддерживаемых архитектур -->
+    <key>LSMinimumSystemVersion</key>
+    <string>10.15</string> <!-- Минимальная поддерживаемая версия macOS -->
+    
+    <!-- Режимы работы приложения -->
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.productivity</string>
+    
+    <!-- Разрешения для приложения (например, доступ к сети) -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+    </dict>
+  </dict>
+</plist>
