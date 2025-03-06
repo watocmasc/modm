@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>resources/logotypes/icon.icns</file>
-        <file>resources/btnAddTask.png</file>
-        <file>resources/btnAddTaskHover.png</file>
-    </qresource>
-</RCC>
