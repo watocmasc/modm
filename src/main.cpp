@@ -1,27 +1,52 @@
-#include <iostream>
 #include <cstdlib>
-#include <glob.h>
-#include <vector>
 #include <modbus/modbus.h>
+#include <set>
+#include <iostream>
+#include <vector>
 
-std::vector<std::string> 
-listSerialPorts () {
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <glob.h>
+#endif
 
-    std::vector<std::string> ports;
+std::vector<std::string> listSerialPorts() {
+    std::set<std::string> uniquePorts;  // Используем set, чтобы избежать дубликатов
 
-    glob_t glob_result;
+#ifdef _WIN32
+    // Windows: проверяем COM1-COM255
+    for (int i = 1; i <= 255; ++i) {
+        std::string portName = "COM" + std::to_string(i);
+        std::string fullPortName = "\\\\.\\" + portName;
 
-    if ( glob ("/dev/tty.*", GLOB_TILDE, nullptr, &glob_result) == 0 ) {
-
-        for ( size_t i = 0; i < glob_result.gl_pathc; ++i ) {
-
-            ports.push_back ( glob_result.gl_pathv[i] );
+        HANDLE hSerial = CreateFileA(fullPortName.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
+        if (hSerial != INVALID_HANDLE_VALUE) {
+            uniquePorts.insert(portName);  // Добавляем только уникальные порты
+            CloseHandle(hSerial);
         }
-
-        globfree ( &glob_result );
     }
+#else
+    // macOS и Linux: используем glob() для поиска портов
+    glob_t glob_result;
+    const char* patterns[] = {
+    #ifdef __APPLE__
+        "/dev/tty.*", "/dev/cu.*"
+    #else
+        "/dev/ttyS*", "/dev/ttyUSB*", "/dev/ttyACM*"
+    #endif
+    };
 
-    return ports;
+    for (const char* pattern : patterns) {
+        if (glob(pattern, GLOB_NOSORT, nullptr, &glob_result) == 0) {
+            for (size_t i = 0; i < glob_result.gl_pathc; ++i) {
+                uniquePorts.insert(glob_result.gl_pathv[i]);  // Добавляем в set, исключая дубликаты
+            }
+        }
+    }
+    globfree(&glob_result);
+#endif
+
+    return std::vector<std::string>(uniquePorts.begin(), uniquePorts.end());
 }
 
 modbus_t*
