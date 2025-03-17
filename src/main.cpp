@@ -1,6 +1,28 @@
 #include <iostream>
 #include <cstdlib>
+#include <glob.h>
+#include <vector>
 #include <modbus/modbus.h>
+
+std::vector<std::string> 
+listSerialPorts () {
+
+    std::vector<std::string> ports;
+
+    glob_t glob_result;
+
+    if ( glob ("/dev/tty.*", GLOB_TILDE, nullptr, &glob_result) == 0 ) {
+
+        for ( size_t i = 0; i < glob_result.gl_pathc; ++i ) {
+
+            ports.push_back ( glob_result.gl_pathv[i] );
+        }
+
+        globfree ( &glob_result );
+    }
+
+    return ports;
+}
 
 modbus_t*
 modbusInit ( const char *port, uint16_t id, int baud, char parity, uint16_t data, uint16_t stop ) {
@@ -73,11 +95,12 @@ int
 main ( int argc, char *argv[] ) {
     // modm -> MODbus Master
     // func: read / write
+    // device 
     // write: modm write device id baud parity data stop addr value 
     // read:  modm read  device id baud parity data stop addr_start count_addr size_arr
     if ( argc == 10 ) {
         
-        // modbus_t* ctx = modbusInit ( "/dev/cu.usbserial-FTB6SPL3", 1, 9600, 'N', 8, 1 );
+        modbus_t* ctx = modbusInit ( "]]]", 1, 9600, 'N', 8, 1 );
         if ( std::string(argv[1]) == "write" ) {
 
             modbus_t* ctx = modbusInit ( argv[2], 
@@ -104,6 +127,17 @@ main ( int argc, char *argv[] ) {
             modbusReadRegister ( ctx, std::atoi(argv[8]), std::atoi(argv[9]), std::atoi ( argv[10] ) );
         }   
 
+    } else if ( argc == 2 && std::string ( argv[1] ) == "devices" ) {
+        std::vector<std::string> ports = listSerialPorts ();
+
+        if ( ports.empty () ) {
+            std::cout << "COM-ports not found\n";
+        } else {
+            std::cout << "Found COM-ports:\n";
+            for ( const auto &port : ports ) {
+                std::cout << port << std::endl;
+            }
+        }
     } else {
         std::cout << "Error";
     }

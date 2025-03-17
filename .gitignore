@@ -1,0 +1,8 @@
+CMakeCache*
+CMakeFiles*
+build.ninja
+modm_autogen
+cmake_install.cmake
+modm
+.qt/
+.ninja*

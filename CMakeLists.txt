@@ -7,9 +7,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Включение автоматической обработки файлов UI, MOC и RCC для Qt
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
 
 set(CMAKE_OSX_ARCHITECTURES "arm64")
 
@@ -22,13 +19,9 @@ if(NOT CMAKE_GENERATOR)
     set(CMAKE_GENERATOR "Ninja")
 endif()
 
-# Находим Qt6, указывая компоненты
-find_package(Qt6 REQUIRED COMPONENTS Core Network Widgets)
-
 # Создаём исполняемый файл
 add_executable(modm
     ${SOURCE_FILES}
-    ${RESOURCE_FILES}  # Добавляем файл ресурсов .qrc, если он есть
 )
 
 # Указываем путь к заголовочным файлам modbus (например, для Homebrew)
@@ -41,9 +34,6 @@ link_directories("/opt/homebrew/Cellar/libmodbus/3.1.11/lib")
 
 # Линкуем с библиотекой modbus и компонентами Qt
 target_link_libraries(modm PRIVATE 
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Network
     /opt/homebrew/Cellar/libmodbus/3.1.11/lib/libmodbus.dylib  # Указываем путь к библиотеке
 )
 
