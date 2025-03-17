@@ -1,3 +1,11 @@
+////////////////////////////////
+// modm -> MODbus Master      //
+//////////////////////////////// 
+//█▄─▀█▀─▄█─▄▄─█▄─▄▄▀█▄─▀█▀─▄█//
+//██─█▄█─██─██─██─██─██─█▄█─██//
+//▀▄▄▄▀▄▄▄▀▄▄▄▄▀▄▄▄▄▀▀▄▄▄▀▄▄▄▀//
+////////////////////////////////
+
 #include <cstdlib>
 #include <modbus/modbus.h>
 #include <set>
@@ -118,14 +126,9 @@ modbusReadRegister ( modbus_t *ctx, uint16_t startRegister, uint16_t countRegist
 
 int 
 main ( int argc, char *argv[] ) {
-    // modm -> MODbus Master
-    // func: read / write
-    // device 
-    // write: modm write device id baud parity data stop addr value 
-    // read:  modm read  device id baud parity data stop addr_start count_addr size_arr
     if ( argc == 10 ) {
         
-        modbus_t* ctx = modbusInit ( "]]]", 1, 9600, 'N', 8, 1 );
+        modbus_t* ctx = modbusInit ( argv[2], 1, 9600, 'N', 8, 1 );
         if ( std::string(argv[1]) == "write" ) {
 
             modbus_t* ctx = modbusInit ( argv[2], 
@@ -164,7 +167,9 @@ main ( int argc, char *argv[] ) {
             }
         }
     } else {
-        std::cout << "Error";
+        std::cout 
+        << "\n[ write ] modm write device id baud parity data stop addr value"
+        << "\n[ read  ] modm read  device id baud parity data stop addr_start count_addr size_arr\n";
     }
 
     return 0;
